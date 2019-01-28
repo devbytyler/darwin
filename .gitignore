@@ -1,0 +1,17 @@
+# Add any directories, files, or patterns you don't want to be tracked by version control
+*.pyc
+*~
+.vscode
+.DS_STORE
+lib/
+/static
+darwin/**/*.css
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+#sublime-gulp log files
+.sublime-gulp.cache
+sublime-gulp.log

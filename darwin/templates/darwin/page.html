@@ -1,0 +1,104 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content=""> {% comment %}
+    <link rel="icon" href="../../../../favicon.ico"> {% endcomment %}
+
+    <title>darwin</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="{% static 'darwin/css/page.css' %}">
+
+    <script defer src="https://use.fontawesome.com/releases/v5.0.4/js/all.js"></script>
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    {% block nav %}
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'darwin_home' %}">
+                <img style="height:36px;padding-right:10px;" src="{% static 'darwin/logo_no_text.png' %}" alt="Dashboard"> darwin
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar"
+                aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="navbar-nav mr-auto">
+                    {% for tab in tabs_primary %}
+                        <li{% if active_tab == tab.name.lower %} class="nav-item active"{% endif %}>
+                            <a class="nav-link" href="{{ tab.url }}">{{ tab.name }}</a>
+                        </li>
+                    {% endfor %}
+                        <input type="text" name="search" class="nav-search">
+                </ul>
+                {% if user.is_authenticated %}
+                <div class="dropdown navbar-account">
+                    <span class="dropdown-toggle"  data-toggle="dropdown" aria-haspopup="true">
+                        {% if user.picture_url %}
+                            <img style="height:42px;width:42px;border-radius: 50%;" src="{{ user.picture_url }}" alt="User">
+                        {% endif %}
+                        <!-- {{ user.get_full_name }} -->
+                    </span>
+                    <div class="dropdown-menu" aria-labelledby="profile-drop-down-menu">
+                        {# <a class="dropdown-item" href="{% url 'darwin_sign_out' %}">Sign out</a> #}
+                    </div>
+                </div>
+                {% else %}
+                    <ul class="navbar-nav ml-auto">
+                        <li>
+                            <a href="#" onclick="fbLogin()">Sign In/Sign Up</a>
+                        </li>
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    {% endblock %}
+
+    {% block container %}
+    <div class="container">
+        <div class="content-box">
+            {% block bread-crumbs %}{% endblock %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>
+                        <a class="close" data-dismiss="alert" href="#">&times;</a>
+                        {{ message }}
+                    </div>
+                    <!--<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>-->
+                {% endfor %}
+            {% endif %}
+            {% block pre-content %}{% endblock %}
+            {% block main-content %}
+            <div class="main-content">
+                {% block content %}{% endblock %}
+            </div>
+            {% endblock %}
+        </div>
+    </div><!-- /.container -->
+    {% endblock %}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <script src="{% static 'darwin/js/page.js' %}"></script>
+
+    <script>
+        {% block footer_script %}{% endblock %}
+    </script>
+
+    {% block footer %}
+    {% endblock %}
+</body>
+
+</html>
