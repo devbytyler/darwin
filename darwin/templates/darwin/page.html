@@ -9,7 +9,7 @@
     <meta name="author" content=""> {% comment %}
     <link rel="icon" href="../../../../favicon.ico"> {% endcomment %}
 
-    <title>darwin</title>
+    <title>Darwin</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
@@ -33,7 +33,7 @@
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="navbar-nav mr-auto">
                     {% for tab in tabs_primary %}
-                        <li{% if active_tab == tab.name.lower %} class="nav-item active"{% endif %}>
+                        <li {% if active_tab == tab.name.lower %} class="nav-item active"{% endif %}>
                             <a class="nav-link" href="{{ tab.url }}">{{ tab.name }}</a>
                         </li>
                     {% endfor %}
@@ -69,7 +69,7 @@
             {% block bread-crumbs %}{% endblock %}
             {% if messages %}
                 {% for message in messages %}
-                    <div{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>
+                    <div {% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>
                         <a class="close" data-dismiss="alert" href="#">&times;</a>
                         {{ message }}
                     </div>
