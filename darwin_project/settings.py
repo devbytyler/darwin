@@ -80,10 +80,12 @@ if 'IS_AWS' in os.environ:
 else:
     DB_HOST = 'localhost'
 
+#        'ENGINE': 'django.db.backends.mysql',
+#        'NAME': 'darwin',
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'darwin',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'USER': 'darwin',
         'PASSWORD': 'darwin',
         'HOST': DB_HOST,
