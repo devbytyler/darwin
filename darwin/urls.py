@@ -1,13 +1,11 @@
 from django.urls import include, path
 from . import views
 
-
-
 urlpatterns = [
     path('boards/', views.BoardList.as_view()),
     path('boards/<int:pk>/', views.BoardDetail.as_view()),
 ]
-    
+
 # urlpatterns = [
 #     path('', views.home, name='home'),
 #     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),

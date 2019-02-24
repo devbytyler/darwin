@@ -3,7 +3,6 @@ from rest_framework import serializers
 
 from darwin.models import Board
 
-
 class BoardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Board

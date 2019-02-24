@@ -17,7 +17,7 @@ def home(request):
     pass
 
 def boards(request):
-    #returns JSON collection of boardsßß
+    #returns JSON collection of boards
     pass
 
 def add_board(request):
