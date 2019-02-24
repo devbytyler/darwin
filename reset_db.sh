@@ -7,4 +7,4 @@ fi
 mysql -uroot -e "DROP DATABASE darwin"
 mysql -uroot -e "CREATE DATABASE darwin"
 python manage.py migrate
-# python manage.py loaddata initial
+python manage.py dbseed
