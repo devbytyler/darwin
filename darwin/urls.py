@@ -2,8 +2,10 @@ from django.urls import include, path
 from . import views
 
 urlpatterns = [
+    path('ideas/', views.ideas),
     path('boards/', views.BoardList.as_view()),
     path('boards/<int:pk>/', views.BoardDetail.as_view()),
+    path('user/<int:user_id>/boards/', views.user_boards),
 ]
 
 # urlpatterns = [

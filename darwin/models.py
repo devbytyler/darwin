@@ -17,13 +17,14 @@ class User(AbstractUser):
     is_active
     date_joined
     """
+    # token
     pass
 
 class Idea(models.Model):
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=2048)
     owner = models.ForeignKey("User", related_name='ideas_owned', on_delete=models.CASCADE) #all ideas owned by a user will be deleted when that user is deleted.
-    users = models.ManyToManyField("User", related_name='ideas_liked', verbose_name="users who are voting for this idea")
+    # users = models.ManyToManyField("User", related_name='ideas_liked', verbose_name="users who are voting for this idea")
     board = models.ForeignKey('Board', related_name='ideas', on_delete=models.CASCADE) #all ideas on a board will be deleted when that board is deleted.
     alive = models.BooleanField(default=True)
 
