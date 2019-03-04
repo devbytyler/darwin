@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from darwin.models import Board, Idea, Vote
+from darwin.models import Board, Idea, Vote, User
 
 class BoardSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,5 +20,5 @@ class VoteSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Vote
+        model = User
         fields = ('username', 'password',)

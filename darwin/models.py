@@ -36,6 +36,7 @@ class Vote(models.Model):
     idea = models.ForeignKey("Idea", related_name="votes", on_delete=models.CASCADE)
     user = models.ForeignKey("User", related_name="votes", on_delete=models.CASCADE)
 
+#Will not implement yet 
 class Chat(models.Model):
     idea = models.ForeignKey("Idea", related_name="chats", on_delete=models.CASCADE)
     user = models.ForeignKey("User", related_name="chats", on_delete=models.CASCADE)
