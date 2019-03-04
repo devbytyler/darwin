@@ -8,7 +8,7 @@ urlpatterns = [
     path('boards/<int:pk>/', views.BoardDetail.as_view()),
     path('users/<int:user_id>/boards/', views.user_boards),
     path('users/<int:user_id>/votes/', views.user_votes),
-    path('users/<int:idea_id>/ideas/', views.idea_votes),
+    path('users/<int:idea_id>/ideas/', views.user_ideas),
 
 ]
 

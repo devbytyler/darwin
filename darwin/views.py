@@ -59,9 +59,9 @@ def user_votes(request, user_id):
         return Response(serializer.data)
 
 @api_view(['GET'])
-def idea_votes(request, idea_id):
+def user_ideas(request, idea_id):
     if request.method == 'GET':
-        idea_votes = Vote.objects.filter(owner=idea_id)
+        idea_votes = Vote.objects.filter(idea_id=idea_id)
         serializer = VoteSerializer(idea_votes, many=True)
         return Response(serializer.data)
 
