@@ -1,20 +1,43 @@
 from django.contrib.auth.models import User, Group
 from django.shortcuts import render
-from rest_framework import status
-from rest_framework import viewsets, generics
-from rest_framework.decorators import api_view
+from rest_framework import viewsets, generics, status     
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
+from rest_framework.reverse import reverse
+from rest_framework.authtoken import views
 
 from .serializers import BoardSerializer, IdeaSerializer, UserSerializer, VoteSerializer
-from .models import Board, Idea, User, Vote  
+from .models import Board, Idea, User, Vote
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'boards': reverse('boards', request=request, format=format),
+        'ideas': reverse('ideas', request=request, format=format),
+        'users': reverse('users', request=request, format=format),
+    })
 
 class BoardList(generics.ListCreateAPIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = Board.objects.all()
     serializer_class = BoardSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
 class BoardDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = Board.objects.all()  
     serializer_class = BoardSerializer
+
+class UserList(generics.ListCreateAPIView):
+    queryset = User.objects.all()   
+    serializer_class = UserSerializer
+
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 @api_view(['GET'])
@@ -25,7 +48,8 @@ def user_boards(request, user_id):
         return Response(serializer.data)
 
 
-@api_view(['GET', 'POST'])   
+@api_view(['GET', 'POST'])
+@permission_classes((IsAuthenticatedOrReadOnly, ))
 def ideas(request):
     if request.method == 'GET':
         ideas = Idea.objects.all()
@@ -38,8 +62,9 @@ def ideas(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['POST','GET'])   
-def users(request, user_id):
+def user(request, user_id):
     if request.method == 'POST':
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -51,6 +76,7 @@ def users(request, user_id):
         serializer = UserSerializer(user, many=True)
         return Response(serializer.data)
  
+
 @api_view(['GET'])
 def user_votes(request, user_id):
     if request.method == 'GET':
@@ -58,47 +84,10 @@ def user_votes(request, user_id):
         serializer = VoteSerializer(user_votes, many=True)
         return Response(serializer.data)
 
+
 @api_view(['GET'])
 def user_ideas(request, idea_id):
     if request.method == 'GET':
         user_ideas = Idea.objects.filter(id=idea_id)
         serializer = IdeaSerializer(user_ideas, many=True)
         return Response(serializer.data)
-
-
-
-
-
-# def home(request):
-#     pass    
-
-# def boards(request):
-#     #returns JSON collection of boards
-#     pass
-
-# def add_board(request):
-#     pass
-
-# def board(request, pk):
-#     pass
-
-# def edit_board(request, pk):
-#     pass
-
-# def delete_board(request, pk):
-#     pass
-
-# def ideas(request):
-#     pass
-
-# def idea(request, board_id, pk):
-#     pass
-
-# def add_idea(request, board_id):
-#     pass
-
-# def edit_idea(request, board_id, pk):
-#     pass
-
-# def delete_idea(request, board_id, pk):
-#     pass

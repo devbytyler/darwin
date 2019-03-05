@@ -14,10 +14,12 @@ class Command(BaseCommand):
         fake = Faker()
         print('Creating users...')
         super_user = User.objects.create_superuser(username='super', email='super@darwin.io', password='123', first_name='Super', last_name='User')
-        user = User.objects.create_user(username='user', email='user@myroadmap.io', password='123', first_name='User', last_name='User')
+        
+        for i in range(10):
+            User.objects.create_user(username=f'user{i}', email=f'user{i}@darwin.io', password='123', first_name=f'User{i}')
 
-        for i in range(100):
-            Board.objects.create(name=f"Board {i}", owner=user)
+        for i in range(12):
+            Board.objects.create(name=f"Board {i}", owner_id=random.randint(1,10))
 
         print('✅ Created seed data!')
 
