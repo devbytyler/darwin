@@ -3,7 +3,8 @@ from . import views
 
 urlpatterns = [
     path('', views.api_root, name='root'),
-    path('login/', views.CustomAuthToken.as_view()),
+    path('login/', views.Login.as_view(), name='login'),
+    path('register/', views.register, name='register'),
     path('ideas/', views.ideas, name='ideas'),
     path('boards/', views.BoardList.as_view(), name='boards'),
     path('boards/<int:pk>/', views.BoardDetail.as_view(), name='board'),
