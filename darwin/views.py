@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User, Group
 from django.shortcuts import render
 from rest_framework import viewsets, generics, status     
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
@@ -19,7 +21,6 @@ def api_root(request, format=None):
     })
 
 class BoardList(generics.ListCreateAPIView):
-    permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = Board.objects.all()
     serializer_class = BoardSerializer
 
@@ -27,7 +28,6 @@ class BoardList(generics.ListCreateAPIView):
         serializer.save(owner=self.request.user)
 
 class BoardDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = Board.objects.all()  
     serializer_class = BoardSerializer
 
@@ -39,6 +39,17 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+class CustomAuthToken(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key,
+            'user': UserSerializer(user).data,
+        })
 
 @api_view(['GET'])
 def user_boards(request, user_id):
