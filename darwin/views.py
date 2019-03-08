@@ -12,6 +12,7 @@ from rest_framework.authtoken import views
 from .serializers import BoardSerializer, IdeaSerializer, UserSerializer, VoteSerializer
 from .models import Board, Idea, User, Vote
 
+
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
@@ -20,24 +21,6 @@ def api_root(request, format=None):
         'users': reverse('users', request=request, format=format),
     })
 
-class BoardList(generics.ListCreateAPIView):
-    queryset = Board.objects.all()
-    serializer_class = BoardSerializer
-
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
-
-class BoardDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Board.objects.all()  
-    serializer_class = BoardSerializer
-
-class UserList(generics.ListCreateAPIView):
-    queryset = User.objects.all()   
-    serializer_class = UserSerializer
-
-class UserDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
 
 class Login(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
@@ -50,6 +33,7 @@ class Login(ObtainAuthToken):
             'token': token.key,
             'user': UserSerializer(user).data,
         })
+
 
 @api_view(['POST'])
 @permission_classes((AllowAny, ))
@@ -65,48 +49,59 @@ def register(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class BoardList(generics.ListCreateAPIView):
+    queryset = Board.objects.all()
+    serializer_class = BoardSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class BoardDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Board.objects.all()  
+    serializer_class = BoardSerializer
+
+
+# @api_view(['GET', 'POST'])
+# def ideas(request):
+#     if request.method == 'GET':
+#         ideas = Idea.objects.all()
+#         serializer = IdeaSerializer(ideas, many=True)
+#         return Response(serializer.data)
+#     elif request.method == 'POST':
+#         serializer = IdeaSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class IdeaList(generics.ListCreateAPIView):
+    queryset = Idea.objects.all()
+    serializer_class = IdeaSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class IdeaDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Idea.objects.all()  
+    serializer_class = IdeaSerializer
+
+
+class UserList(generics.ListCreateAPIView):
+    queryset = User.objects.all()   
+    serializer_class = UserSerializer
+
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
 @api_view(['GET'])
 def user_boards(request, user_id):
     if request.method == 'GET':
         user_boards = Board.objects.filter(owner=user_id)
         serializer = BoardSerializer(user_boards, many=True)
-        return Response(serializer.data)
-
-
-@api_view(['GET', 'POST'])
-@permission_classes((IsAuthenticatedOrReadOnly, ))
-def ideas(request):
-    if request.method == 'GET':
-        ideas = Idea.objects.all()
-        serializer = IdeaSerializer(ideas, many=True)
-        return Response(serializer.data)
-    elif request.method == 'POST':
-        serializer = IdeaSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['POST','GET'])   
-def user(request, user_id):
-    if request.method == 'POST':
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    if request.method == 'GET':
-        user = User.objects.filter(id=user_id)
-        serializer = UserSerializer(user, many=True)
-        return Response(serializer.data)
- 
-
-@api_view(['GET'])
-def user_votes(request, user_id):
-    if request.method == 'GET':
-        user_votes = Vote.objects.filter(user_id=user_id)
-        serializer = VoteSerializer(user_votes, many=True)
         return Response(serializer.data)
 
 
@@ -116,3 +111,15 @@ def user_ideas(request, idea_id):
         user_ideas = Idea.objects.filter(id=idea_id)
         serializer = IdeaSerializer(user_ideas, many=True)
         return Response(serializer.data)
+
+
+@api_view(['GET'])
+def user_votes(request, user_id):
+    if request.method == 'GET':
+        user_votes = Vote.objects.filter(user_id=user_id)
+        serializer = VoteSerializer(user_votes, many=True)
+        return Response(serializer.data)
+
+ 
+
+

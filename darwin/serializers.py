@@ -6,17 +6,17 @@ from darwin.models import Board, Idea, Vote, User
 class BoardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Board
-        fields = ('name', 'owner',)
+        fields = ('id', 'name', 'owner',)
 
 class IdeaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Idea
-        fields = ('title', 'description', 'owner', 'board', 'alive')
+        fields = ('id','title', 'description', 'owner', 'board', 'alive')
 
 class VoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vote
-        fields = ('user', 'idea',)
+        fields = ('id','user', 'idea',)
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
