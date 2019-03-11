@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.authtoken import views
 
-from .serializers import BoardSerializer, IdeaSerializer, UserSerializer, VoteSerializer
+from .serializers import BoardModelSerializer, IdeaModelSerializer, UserModelSerializer, VoteModelSerializer
 from .models import Board, Idea, User, Vote
 
 
@@ -31,20 +31,20 @@ class Login(ObtainAuthToken):
         token, created = Token.objects.get_or_create(user=user)
         return Response({
             'token': token.key,
-            'user': UserSerializer(user).data,
+            'user': UserModelSerializer(user).data,
         })
 
 
 @api_view(['POST'])
 @permission_classes((AllowAny, ))
 def register(request):
-    serializer = UserSerializer(data=request.data)
+    serializer = UserModelSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
         token, created = Token.objects.get_or_create(user=user)
         return Response({
             'token': token.key,
-            'user': UserSerializer(user).data,
+            'user': UserModelSerializer(user).data,
         }, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -52,7 +52,7 @@ def register(request):
 #they will never hit this
 class BoardList(generics.ListCreateAPIView):
     queryset = Board.objects.all()
-    serializer_class = BoardSerializer
+    serializer_class = BoardModelSerializer
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -61,7 +61,7 @@ class BoardList(generics.ListCreateAPIView):
 
 class BoardDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Board.objects.all()  
-    serializer_class = BoardSerializer
+    serializer_class = BoardModelSerializer
 
 
 # @api_view(['GET', 'POST'])
@@ -79,7 +79,7 @@ class BoardDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class IdeaList(generics.ListCreateAPIView):
     queryset = Idea.objects.all()
-    serializer_class = IdeaSerializer
+    serializer_class = IdeaModelSerializer
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -87,24 +87,24 @@ class IdeaList(generics.ListCreateAPIView):
 
 class IdeaDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Idea.objects.all()  
-    serializer_class = IdeaSerializer
+    serializer_class = IdeaModelSerializer
 
 
 class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()   
-    serializer_class = UserSerializer
+    serializer_class = UserModelSerializer
 
 
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UserModelSerializer
 
 
 @api_view(['GET'])
 def user_boards(request, user_id):
     if request.method == 'GET':
         user_boards = Board.objects.filter(owner=user_id)
-        serializer = BoardSerializer(user_boards, many=True)
+        serializer = BoardModelSerializer(user_boards, many=True)
         return Response(serializer.data)
 
 
@@ -112,7 +112,7 @@ def user_boards(request, user_id):
 def user_ideas(request, idea_id):
     if request.method == 'GET':
         user_ideas = Idea.objects.filter(id=idea_id)
-        serializer = IdeaSerializer(user_ideas, many=True)
+        serializer = IdeaModelSerializer(user_ideas, many=True)
         return Response(serializer.data)
 
 
@@ -120,5 +120,5 @@ def user_ideas(request, idea_id):
 def user_votes(request, user_id):
     if request.method == 'GET':
         user_votes = Vote.objects.filter(user_id=user_id)
-        serializer = VoteSerializer(user_votes, many=True)
+        serializer = VoteModelSerializer(user_votes, many=True)
         return Response(serializer.data)
