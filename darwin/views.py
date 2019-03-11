@@ -49,12 +49,14 @@ def register(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+#they will never hit this
 class BoardList(generics.ListCreateAPIView):
     queryset = Board.objects.all()
     serializer_class = BoardSerializer
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
 
 
 class BoardDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -92,6 +94,7 @@ class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()   
     serializer_class = UserSerializer
 
+
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -119,7 +122,3 @@ def user_votes(request, user_id):
         user_votes = Vote.objects.filter(user_id=user_id)
         serializer = VoteSerializer(user_votes, many=True)
         return Response(serializer.data)
-
- 
-
-
