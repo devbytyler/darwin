@@ -17,4 +17,7 @@ urlpatterns = [
     path('users/<int:user_id>/boards/', views.user_boards, name='user_boards'),
     path('users/<int:user_id>/ideas/', views.user_ideas, name='user_ideas'),
     path('users/<int:user_id>/votes/', views.user_votes, name='user_votes'),
+
+    path('vote/', views.cast_vote, name='cast_vote'),
+
 ]   
