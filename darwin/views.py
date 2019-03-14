@@ -19,6 +19,7 @@ def api_root(request, format=None):
         'boards': reverse('boards', request=request, format=format),
         'ideas': reverse('ideas', request=request, format=format),
         'users': reverse('users', request=request, format=format),
+        'votes': reverse('votes', request=request, format=format),
     })
 
 
@@ -90,6 +91,11 @@ class IdeaDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = IdeaModelSerializer
 
 
+class VoteList(generics.ListAPIView):
+    queryset = Vote.objects.all()
+    serializer_class = VoteModelSerializer
+
+
 class UserList(generics.ListCreateAPIView):
     queryset = User.objects.all()   
     serializer_class = UserModelSerializer
@@ -134,12 +140,26 @@ def board_page(request, board_id):
         "owner": board.owner.id,
         "ideas":idea_serializer.data
     })
+    
 @api_view(['POST'])
 def cast_vote(request):
-    serializer = VoteModelSerializer(data=request.data, partial=True)
+    serializer = VoteModelSerializer(data=request.data)
+    idea_id = request.data['idea']
+    existing_vote = Vote.objects.filter(idea_id=idea_id, user=request.user)
+    if existing_vote:
+        existing_vote.delete()
+        return Response({'removed': True}, status=status.HTTP_200_OK)
     if serializer.is_valid():
-        if request.user:  
-            vote = serializer.save(user=request.user)
-            return Response({'id': vote.id}, status=status.HTTP_201_CREATED)
-        raise serializers.ValidationError("user is null")
+        vote = serializer.save(user=request.user)
+        return Response({'id': vote.id}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def toggle_is_voting(request):
+    pass
+
+
+@api_view(['POST'])
+def advance_round(request, board_id):
+    pass
