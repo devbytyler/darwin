@@ -43,11 +43,8 @@ class Vote(models.Model):
     user = models.ForeignKey("User", related_name="votes", on_delete=models.CASCADE)
 
 
-# class Comment(models.Model):
-#     owner = models.ForeignKey('User', related_name='comments', on_delete=models.CASCADE)   
-#     body = models.CharField(max_length=255)
-
-class Chat(models.Model):
-    idea = models.ForeignKey("Idea", related_name="chats", on_delete=models.CASCADE)
-    user = models.ForeignKey("User", related_name="chats", on_delete=models.CASCADE)
+class Comment(models.Model):
+    idea = models.ForeignKey("Idea", related_name="comments", on_delete=models.CASCADE)
+    user = models.ForeignKey("User", related_name="comments", on_delete=models.CASCADE)
     message = models.TextField()
+    created = models.DateTimeField(auto_now=True)

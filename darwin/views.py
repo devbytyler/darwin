@@ -1,15 +1,15 @@
 from django.contrib.auth.models import User, Group
 from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, generics, status, serializers  
+from rest_framework.authtoken import views
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
-from rest_framework.authtoken import views
 
-from .serializers import BoardModelSerializer, IdeaModelSerializer, UserModelSerializer, VoteModelSerializer,ChatModelSerializer
+from .serializers import BoardModelSerializer, IdeaModelSerializer, UserModelSerializer, VoteModelSerializer, CommentModelSerializer
 from .models import Board, Idea, User, Vote
 
 
@@ -138,7 +138,7 @@ def board_page(request, board_id):
     return Response({
         "title": board.name,
         "owner": board.owner.id,
-        "ideas":idea_serializer.data
+        "ideas": idea_serializer.data
     })
     
 @api_view(['POST'])

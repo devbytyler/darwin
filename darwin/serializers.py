@@ -1,20 +1,20 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from darwin.models import Board, Idea, Vote, User, Chat
+from darwin.models import Board, Idea, Vote, User, Comment
 
 class BoardModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Board
         fields = ('id', 'name', 'owner',)
 
-class ChatModelSerializer(serializers.ModelSerializer):
+class CommentModelSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ('owner', 'body')
+        model = Comment
+        fields = ('user', 'idea', 'message')
 
 class IdeaModelSerializer(serializers.ModelSerializer):
-    comments = ChatModelSerializer(many=True,read_only=True)
+    comments = CommentModelSerializer(many=True,read_only=True)
     class Meta:
         model = Idea
         fields = ('id','title', 'description', 'owner', 'board', 'alive','comments')
