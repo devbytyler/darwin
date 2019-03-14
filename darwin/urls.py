@@ -20,13 +20,9 @@ urlpatterns = [
 
     ])),
     path('', views.api_root, name='root'),
+    path('boards/<int:board_id>', views.board_page, name='board_page'),
+    path('register/', views.register, name='register'),
+
     
-
-
-
-
-
-
-
 
 ]   

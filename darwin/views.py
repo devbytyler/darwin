@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.authtoken import views
 
-from .serializers import BoardModelSerializer, IdeaModelSerializer, UserModelSerializer, VoteModelSerializer
+from .serializers import BoardModelSerializer, IdeaModelSerializer, UserModelSerializer, VoteModelSerializer,ChatModelSerializer
 from .models import Board, Idea, User, Vote
 
 
@@ -122,3 +122,15 @@ def user_votes(request, user_id):
         user_votes = Vote.objects.filter(user_id=user_id)
         serializer = VoteModelSerializer(user_votes, many=True)
         return Response(serializer.data)
+
+
+@api_view(['GET'])
+def board_page(request, board_id):
+    board = Board.objects.filter(id=board_id).first()
+    ideas = Idea.objects.all()
+    idea_serializer = IdeaModelSerializer(ideas,many=True)
+    return Response({
+        "title": board.name,
+        "owner": board.owner.id,
+        "ideas":idea_serializer.data
+    })
