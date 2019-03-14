@@ -2,6 +2,11 @@ from django.urls import include, path
 from . import views
 
 urlpatterns = [
+    path('', views.api_root, name='root'),
+    path('vote/', views.cast_vote, name='cast_vote'),
+    path('boards/<int:board_id>', views.board_page, name='board_page'),
+    
+    #API-browser routes
     path('api/',include([
         path('login/', views.Login.as_view(), name='login'),
         path('register/', views.register, name='register'),
@@ -17,12 +22,5 @@ urlpatterns = [
         path('users/<int:user_id>/boards/', views.user_boards, name='user_boards'),
         path('users/<int:user_id>/ideas/', views.user_ideas, name='user_ideas'),
         path('users/<int:user_id>/votes/', views.user_votes, name='user_votes'),
-
     ])),
-    path('', views.api_root, name='root'),
-    path('boards/<int:board_id>', views.board_page, name='board_page'),
-    path('register/', views.register, name='register'),
-
-    
-
 ]   

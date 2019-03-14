@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User, Group
-from django.shortcuts import render
-from rest_framework import viewsets, generics, status     
+from django.shortcuts import render, get_object_or_404
+from rest_framework import viewsets, generics, status, serializers  
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
@@ -134,3 +134,12 @@ def board_page(request, board_id):
         "owner": board.owner.id,
         "ideas":idea_serializer.data
     })
+@api_view(['POST'])
+def cast_vote(request):
+    serializer = VoteModelSerializer(data=request.data, partial=True)
+    if serializer.is_valid():
+        if request.user:  
+            vote = serializer.save(user=request.user)
+            return Response({'id': vote.id}, status=status.HTTP_201_CREATED)
+        raise serializers.ValidationError("user is null")
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
