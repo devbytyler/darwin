@@ -21,6 +21,7 @@ class IdeaModelSerializer(serializers.ModelSerializer):
     comments = CommentModelSerializer(many=True,read_only=True)
     total_votes = serializers.SerializerMethodField()
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
+    alive = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Idea
