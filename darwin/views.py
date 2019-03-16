@@ -139,6 +139,7 @@ def board_page(request, board_id):
         "title": board.name,
         "owner": board.owner.id,
         "votes_remaining": votes_remaining,
+        "is_owner": True if request.user == board.owner else False,
         "ideas": idea_serializer.data,
     })
     
