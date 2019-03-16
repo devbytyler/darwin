@@ -132,11 +132,12 @@ def user_votes(request, user_id):
 def board_page(request, board_id):
     board = Board.objects.filter(id=board_id).first()
     ideas = Idea.objects.filter(board=board)
-    idea_serializer = IdeaModelSerializer(ideas,many=True)
+    idea_serializer = IdeaModelSerializer(ideas, context={'request': request}, many=True)
     votes_remaining = board.votes_per_user - Vote.objects.filter(user=request.user, idea__in=ideas).count()
 
     return Response({
-        "title": board.name,
+        "id": board.id,
+        "name": board.name,
         "owner": board.owner.id,
         "votes_remaining": votes_remaining,
         "is_owner": True if request.user == board.owner else False,
@@ -151,7 +152,7 @@ def cast_vote(request):
     if existing_vote:
         existing_vote.delete()
         return Response({'removed': True}, status=status.HTTP_200_OK)
-    if serializer.is_valid():
+    if serializer.is_valid():   
         vote = serializer.save(user=request.user)
         return Response({'id': vote.id}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -159,7 +160,6 @@ def cast_vote(request):
 
 @api_view(['POST'])
 def toggle_is_voting(request, board_id):
-
     pass
 
 

@@ -12,9 +12,10 @@ class BoardModelSerializer(serializers.ModelSerializer):
 
 
 class CommentModelSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Comment
-        fields = ('user', 'idea', 'message')
+        fields = ('user', 'idea', 'message',)
 
 
 class IdeaModelSerializer(serializers.ModelSerializer):
@@ -22,13 +23,20 @@ class IdeaModelSerializer(serializers.ModelSerializer):
     total_votes = serializers.SerializerMethodField()
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
     alive = serializers.BooleanField(read_only=True)
+    has_voted = serializers.SerializerMethodField()
 
     class Meta:
         model = Idea
-        fields = ('id','title', 'description', 'owner', 'board', 'alive', 'total_votes', 'comments',)
+        fields = ('id','title', 'description', 'owner', 'board', 'alive', 'total_votes', 'has_voted', 'comments',)
 
     def get_total_votes(self, obj):
         return obj.get_vote_count()
+
+    def get_has_voted(self, obj):
+        current_user = self.context.get('request').user
+        has_vote = Vote.objects.filter(idea=obj, user=current_user.id)
+        return not not has_vote
+
 
 
 class VoteModelSerializer(serializers.ModelSerializer):
