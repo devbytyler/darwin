@@ -59,7 +59,6 @@ class BoardList(generics.ListCreateAPIView):
         serializer.save(owner=self.request.user)
 
 
-
 class BoardDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Board.objects.all()  
     serializer_class = BoardModelSerializer
@@ -133,12 +132,15 @@ def user_votes(request, user_id):
 @api_view(['GET'])
 def board_page(request, board_id):
     board = Board.objects.filter(id=board_id).first()
-    ideas = Idea.objects.all()
+    ideas = Idea.objects.filter(board=board)
     idea_serializer = IdeaModelSerializer(ideas,many=True)
+    votes_remaining = board.votes_per_user - Vote.objects.filter(user=request.user, idea__in=ideas).count()
+
     return Response({
         "title": board.name,
         "owner": board.owner.id,
-        "ideas": idea_serializer.data
+        "votes_remaining": votes_remaining,
+        "ideas": idea_serializer.data,
     })
     
 @api_view(['POST'])
@@ -156,10 +158,13 @@ def cast_vote(request):
 
 
 @api_view(['POST'])
-def toggle_is_voting(request):
+def toggle_is_voting(request, board_id):
+
     pass
 
 
 @api_view(['POST'])
 def advance_round(request, board_id):
     pass
+
+#todo return user_votes_remaining

@@ -8,16 +8,23 @@ class BoardModelSerializer(serializers.ModelSerializer):
         model = Board
         fields = ('id', 'name', 'owner',)
 
+
 class CommentModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('user', 'idea', 'message')
 
+
 class IdeaModelSerializer(serializers.ModelSerializer):
     comments = CommentModelSerializer(many=True,read_only=True)
+    total_votes = serializers.SerializerMethodField()
+
     class Meta:
         model = Idea
-        fields = ('id','title', 'description', 'owner', 'board', 'alive','comments')
+        fields = ('id','title', 'description', 'owner', 'board', 'alive', 'total_votes', 'comments',)
+
+    def get_total_votes(self, obj):
+        return obj.get_vote_count()
 
 
 class VoteModelSerializer(serializers.ModelSerializer):

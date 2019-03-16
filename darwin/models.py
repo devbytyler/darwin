@@ -25,13 +25,16 @@ class Idea(models.Model):
     board = models.ForeignKey('Board', related_name='ideas', on_delete=models.CASCADE) #all ideas on a board will be deleted when that board is deleted.
     alive = models.BooleanField(default=True)
 
+    def get_vote_count(self):
+        return self.votes.all().count()
+
 
 class Board(models.Model):
     name = models.CharField(max_length=255)
     owner = models.ForeignKey('User', related_name='boards', on_delete=models.CASCADE) #all boards owned by user will be deleted when that user is deleted.
     code = models.CharField(max_length=20, null=True)
     is_voting = models.BooleanField(default=False)
-    votes_per_user = models.IntegerField(default=0)
+    votes_per_user = models.IntegerField(default=3)         
     # current_round = models.IntegerField(default=1)
 
     # def advance_round(self):
