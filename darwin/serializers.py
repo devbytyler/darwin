@@ -4,6 +4,8 @@ from rest_framework import serializers
 from darwin.models import Board, Idea, Vote, User, Comment
 
 class BoardModelSerializer(serializers.ModelSerializer):
+    owner = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = Board
         fields = ('id', 'name', 'owner',)
@@ -18,6 +20,7 @@ class CommentModelSerializer(serializers.ModelSerializer):
 class IdeaModelSerializer(serializers.ModelSerializer):
     comments = CommentModelSerializer(many=True,read_only=True)
     total_votes = serializers.SerializerMethodField()
+    owner = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Idea
