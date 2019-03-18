@@ -55,7 +55,25 @@ class BoardList(generics.ListCreateAPIView):
     serializer_class = BoardModelSerializer
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        return serializer.save(owner=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        board = self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        ideas = Idea.objects.filter(board=board)
+        idea_serializer = IdeaModelSerializer(ideas, context={'request': request}, many=True)
+        votes_remaining = board.votes_per_user - Vote.objects.filter(user=request.user, idea__in=ideas).count()
+
+        return Response({
+            "id": board.id,
+            "name": board.name,
+            "owner": board.owner.id,
+            "votes_remaining": votes_remaining,
+            "is_owner": True if request.user == board.owner else False,
+            "ideas": idea_serializer.data,
+        }, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class BoardDetail(generics.RetrieveUpdateDestroyAPIView):
