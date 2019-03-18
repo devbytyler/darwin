@@ -176,13 +176,20 @@ def cast_vote(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['POST'])
-def toggle_is_voting(request, board_id):
-    pass
 
+# TODO: HECTOR DO THESE 2 VIEWS:
 
 @api_view(['POST'])
-def advance_round(request, board_id):
-    pass
+def end_round():
+    #changes is_voting to false on the board
+    #clears all the votes for that board
+    #needs to set lowest ideas to alive=False (kill the bottom third for now, and last round keep the highest idea)
+
+@api_view(['POST'])
+def start_round():
+    #get the number of votes for this round
+    #raises the round incrementer
+    #changes is_voting to true on the board
+
 
 #todo return user_votes_remaining

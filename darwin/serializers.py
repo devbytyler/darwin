@@ -15,7 +15,7 @@ class CommentModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('user', 'idea', 'message',)
+        fields = ('user', 'idea', 'message', 'created')
 
 
 class IdeaModelSerializer(serializers.ModelSerializer):
