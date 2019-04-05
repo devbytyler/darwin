@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
 from .serializers import BoardModelSerializer, IdeaModelSerializer, UserModelSerializer, VoteModelSerializer, CommentModelSerializer
-from .models import Board, Idea, User, Vote
+from .models import Board, Idea, User, Vote, Comment
 
 
 @api_view(['GET'])
@@ -121,6 +121,9 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserModelSerializer
 
+class CommentsList(generics.ListCreateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentModelSerializer
 
 @api_view(['GET'])
 def user_boards(request, user_id):
@@ -157,6 +160,8 @@ def board_page(request, board_id):
         "id": board.id,
         "name": board.name,
         "owner": board.owner.id,
+        "is_voting": board.is_voting,
+        "current_round":board.current_round,
         "votes_remaining": votes_remaining,
         "is_owner": True if request.user == board.owner else False,
         "ideas": idea_serializer.data,
@@ -177,19 +182,32 @@ def cast_vote(request):
 
 
 
-# TODO: HECTOR DO THESE 2 VIEWS:
+@api_view(['POST'])
+def end_round(request, board_id):
+    board = Board.objects.filter(id=board_id).first()
+    board.is_voting = False
+    board.save()
+
+    cutoff = request.data["cutoff"]
+    ideas = Idea.objects.filter(board_id=board_id)
+    idea_index_to_num_votes= {}
+    for i, idea in enumerate(ideas):
+        idea_index_to_num_votes[i] = idea.get_vote_count()
+    ideas_to_kill = {k:v for k,v in idea_index_to_num_votes.items() if v < cutoff}
+    for k,v in ideas_to_kill.items():
+       ideas[k].alive = False 
+       ideas[k].save()
+    Vote.objects.filter(idea__board=board).delete()
+
+    return Response({}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
-def end_round():
-    #changes is_voting to false on the board
-    #clears all the votes for that board
-    #needs to set lowest ideas to alive=False (kill the bottom third for now, and last round keep the highest idea)
+def start_round(request, board_id):
+    board = Board.objects.filter(id=board_id).first()
+    board.is_voting = True
+    board.current_round += 1
+    board.votes_per_user = request.data['round_votes']
+    board.save()
 
-@api_view(['POST'])
-def start_round():
-    #get the number of votes for this round
-    #raises the round incrementer
-    #changes is_voting to true on the board
+    return Response({}, status=status.HTTP_200_OK)
 
-
-#todo return user_votes_remaining

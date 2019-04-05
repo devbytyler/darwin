@@ -35,7 +35,7 @@ class Board(models.Model):
     code = models.CharField(max_length=20, null=True)
     is_voting = models.BooleanField(default=False)
     votes_per_user = models.IntegerField(default=3)         
-    # current_round = models.IntegerField(default=1)
+    current_round = models.IntegerField(default=0)
 
     # def advance_round(self):
     #     self.current_round = self.current_round + 1

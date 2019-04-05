@@ -8,7 +8,7 @@ class BoardModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Board
-        fields = ('id', 'name', 'owner',)
+        fields = ('id', 'name', 'owner','is_voting','current_round')
 
 
 class CommentModelSerializer(serializers.ModelSerializer):

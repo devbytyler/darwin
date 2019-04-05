@@ -10,6 +10,9 @@ urlpatterns = [
     path('vote/', views.cast_vote, name='cast_vote'),
     path('ideas/', views.IdeaList.as_view(), name='ideas'),
     path('ideas/<int:pk>/', views.IdeaDetail.as_view(), name='idea'),
+    path('comments/', views.CommentsList.as_view(), name='comments'),
+    path('end_round/<int:board_id>/', views.end_round, name='end_round'),
+    path('start_round/<int:board_id>/', views.start_round, name='start_round'),
     
     #API-browser routes
     path('api/',include([
