@@ -12,6 +12,7 @@ class BoardModelSerializer(serializers.ModelSerializer):
 
 
 class CommentModelSerializer(serializers.ModelSerializer):
+    user = UserModelSerializer()
 
     class Meta:
         model = Comment
