@@ -121,12 +121,14 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserModelSerializer
 
+
 class CommentsList(generics.ListCreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentModelSerializer
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
 
 @api_view(['GET'])
 def user_boards(request, user_id):

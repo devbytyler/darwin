@@ -37,9 +37,6 @@ class Board(models.Model):
     votes_per_user = models.IntegerField(default=3)         
     current_round = models.IntegerField(default=0)
 
-    # def advance_round(self):
-    #     self.current_round = self.current_round + 1
-
 
 class Vote(models.Model):
     idea = models.ForeignKey("Idea", related_name="votes", on_delete=models.CASCADE)

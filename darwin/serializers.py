@@ -16,7 +16,6 @@ class CommentModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ('user', 'idea', 'message', 'created')
-        depth = 1
 
 class IdeaModelSerializer(serializers.ModelSerializer):
     comments = CommentModelSerializer(many=True,read_only=True)
