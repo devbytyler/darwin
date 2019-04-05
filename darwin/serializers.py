@@ -3,6 +3,15 @@ from rest_framework import serializers
 
 from darwin.models import Board, Idea, Vote, User, Comment
 
+class UserModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'password', 'first_name', 'last_name', 'email', )
+
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
+
+
 class BoardModelSerializer(serializers.ModelSerializer):
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
 
@@ -12,7 +21,7 @@ class BoardModelSerializer(serializers.ModelSerializer):
 
 
 class CommentModelSerializer(serializers.ModelSerializer):
-    user = UserModelSerializer()
+    user = UserModelSerializer(read_only=True)
 
     class Meta:
         model = Comment
@@ -47,11 +56,4 @@ class VoteModelSerializer(serializers.ModelSerializer):
         fields = ('id','user', 'idea',)
 
 
-class UserModelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'password', 'first_name', 'last_name', 'email', )
-
-    def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
 
