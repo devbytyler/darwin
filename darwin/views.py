@@ -216,3 +216,11 @@ def start_round(request, board_id):
 
     return Response({}, status=status.HTTP_200_OK)
 
+
+@api_view(['POST'])
+def resurrect_idea(request, idea_id):
+    idea = Idea.objects.filter(id=idea_id).first()
+    idea.alive = True
+    idea.save()
+
+    return Response({}, status=status.HTTP_200_OK)

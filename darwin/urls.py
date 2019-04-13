@@ -13,6 +13,8 @@ urlpatterns = [
     path('comments/', views.CommentsList.as_view(), name='comments'),
     path('end_round/<int:board_id>/', views.end_round, name='end_round'),
     path('start_round/<int:board_id>/', views.start_round, name='start_round'),
+    path('resurrect_idea/<int:idea_id>/', views.resurrect_idea, name='resurrect_idea'),
+
     
     #API-browser routes
     path('api/',include([
